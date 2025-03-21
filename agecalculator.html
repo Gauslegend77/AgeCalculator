@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Age Calculator - Find your exact age, next birthday, zodiac sign, and fun future predictions!">
+    <title>Age Calculator - Exact Age, Zodiac & Future Predictions</title>
+    <style>
+        /* Dark Theme Styles */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #121212;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            background: #1f1f1f;
+            padding: 25px;
+            box-shadow: 0px 0px 15px rgba(0, 255, 150, 0.5);
+            margin: auto;
+            border-radius: 10px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #00ff99;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #00ff99; }
+            to { text-shadow: 0 0 20px #00ffcc; }
+        }
+
+        input, button {
+            padding: 12px;
+            margin: 10px;
+            width: 85%;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        input {
+            background-color: #222;
+            color: white;
+        }
+
+        button {
+            background-color: #00ff99;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #00cc77;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            font-size: 18px;
+            color: #ffcc00;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Result Box */
+        .result-box {
+            display: none;
+            background: #282828;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.5);
+            animation: pop 0.5s ease-out;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .emoji {
+            font-size: 24px;
+        }
+
+        .ad-container {
+            margin-top: 20px;
+        }
+    </style>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🎉 Age Calculator 🎂</h1>
+        <p>Enter your date of birth to find your age, zodiac, and more!</p>
+        <input type="date" id="dob">
+        <button onclick="calculateAge()">Generate 🎯</button>
+
+        <div class="loading" id="loading">🔄 Calculating... Please wait</div>
+
+        <div id="result" class="result-box"></div>
+
+        <!-- Google AdSense Ad -->
+        <div class="ad-container">
+            <ins class="adsbygoogle"
+                style="display:block"
+                data-ad-client="your-adsense-code"
+                data-ad-slot="your-ad-slot"
+                data-ad-format="auto"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+    </div>
+
+    <script>
+        function calculateAge() {
+            let dobInput = document.getElementById("dob").value;
+            if (!dobInput) {
+                alert("🚨 Please enter a valid date of birth.");
+                return;
+            }
+
+            let loadingDiv = document.getElementById("loading");
+            let resultDiv = document.getElementById("result");
+
+            loadingDiv.style.display = "block";
+            resultDiv.style.display = "none";
+
+            setTimeout(() => {
+                loadingDiv.style.display = "none";
+
+                let dob = new Date(dobInput);
+                let today = new Date();
+                let ageYears = today.getFullYear() - dob.getFullYear();
+                let ageMonths = today.getMonth() - dob.getMonth();
+                let ageDays = today.getDate() - dob.getDate();
+
+                if (ageDays < 0) {
+                    ageMonths--;
+                    ageDays += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+                }
+                if (ageMonths < 0) {
+                    ageYears--;
+                    ageMonths += 12;
+                }
+
+                let nextBirthday = new Date(today.getFullYear(), dob.getMonth(), dob.getDate());
+                if (today > nextBirthday) {
+                    nextBirthday.setFullYear(today.getFullYear() + 1);
+                }
+                let daysUntilBirthday = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
+
+                let zodiac = getZodiacSign(dob.getDate(), dob.getMonth() + 1);
+                let futurePredictions = getFuturePredictions(ageYears);
+
+                resultDiv.innerHTML = `
+                    <h3>🎈 Your Age: ${ageYears} years, ${ageMonths} months, ${ageDays} days</h3>
+                    <h4>🎂 Next Birthday: ${nextBirthday.toDateString()} (${daysUntilBirthday} days left!)</h4>
+                    <h4>🔮 Zodiac Sign: ${zodiac}</h4>
+                    <h4>🚀 Future Prediction: ${futurePredictions}</h4>
+                `;
+                resultDiv.style.display = "block";
+            }, 2500);
+        }
+
+        function getZodiacSign(day, month) {
+            let zodiacSigns = ["Capricorn ♑", "Aquarius ♒", "Pisces ♓", "Aries ♈", "Taurus ♉", "Gemini ♊",
+                "Cancer ♋", "Leo ♌", "Virgo ♍", "Libra ♎", "Scorpio ♏", "Sagittarius ♐"];
+            let zodiacDates = [19, 18, 20, 19, 20, 20, 22, 22, 22, 22, 21, 21];
+
+            return (day > zodiacDates[month - 1]) ? zodiacSigns[month] : zodiacSigns[month - 1];
+        }
+
+        function getFuturePredictions(age) {
+            let predictions = [
+                "✨ Exciting changes are coming soon!",
+                "🌍 A surprise journey awaits!",
+                "💰 Financial growth in the near future!",
+                "❤️ Love and friendships will strengthen!",
+                "🚀 Career breakthroughs ahead!"
+            ];
+            return predictions[age % predictions.length]; 
+        }
+    </script>
+
+</body>
+</html>
